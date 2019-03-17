@@ -1,0 +1,32 @@
+.login-header{
+    background-color: #031424;
+    color: #fff;
+}
+
+.home-reg-form{
+    background-color: #30415d;
+    height: 100%;
+    color: #fff;
+    opacity: 0.9;
+}
+
+.footer{
+    background-color: whitesmoke;
+    color: #031424;
+}
+
+.home-bck{
+    background-image: url('../img/home.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.welcome{
+    background: whitesmoke;
+    color: #031424;
+    opacity: 0.8;
+}
+
+.ultramarine{
+    background-color: #031424 !important;
+}
