@@ -67,7 +67,7 @@
         			
         			
         			<hr>
-        			<div class="blog-list-div">
+        			<div id="blog-list-div">
         				<%
         					ContentBean contentBean = (ContentBean)session.getAttribute("contentBean");
         					for(Blog blog: contentBean.getAllBlogs()){
@@ -79,8 +79,8 @@
         						String timestamp = new SimpleDateFormat("dd MMM yyyy HH:mm").format(blog.getTimestamp());
         						String title = blog.getTitle();
         				%>
-        					<div id="blog-body" class="bg-white rounded p-1">
-	        					<div id="blog-header" class="bg-secondary text-white form-inline p-1 rounded">
+        					<div id="blog-body" class="bg-white rounded py-1 px-2 mb-2">
+	        					<div id="blog-header" class="bg-secondary text-white form-inline p-2 rounded">
 	        						<img alt="" src="<%=userImage %>" height="20" width="20" class="rounded-circle mr-1">
 	        						<a style="text-decoration: none" href="Account?action=view&userId=<%=userId %>" class="text-white"><%=nameAndSurname %></a>
 	        						<span class="ml-auto"><%=timestamp %></span>

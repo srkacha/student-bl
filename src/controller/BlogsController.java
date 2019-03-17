@@ -12,10 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import beans.ContentBean;
 import beans.UserBean;
 import dao.BlogDAO;
 import dao.LoggingInfoDAO;
 import dto.Blog;
+import dto.Comment;
 import dto.User;
 
 /**
@@ -76,6 +78,42 @@ public class BlogsController extends HttpServlet {
 			}else {
 				String message = (String)session.getAttribute("blogMessage");
 				writer.write(message);
+			}
+		}else if("view".equals(action)) {
+			String blogId = request.getParameter("blogId");
+			if(blogId != null && !"".equals(blogId)) {
+				Blog blog = blogDAO.getById(blogId);
+				if(blog != null) {
+					address = "WEB-INF/pages/blog.jsp";
+					ContentBean contentBean = (ContentBean)session.getAttribute("contentBean");
+					contentBean.setBlogToShow(blog);
+					dispatcher = request.getRequestDispatcher(address);
+					dispatcher.forward(request, response);
+				}else {
+					address = "WEB-INF/pages/error.jsp";
+					session.setAttribute("globalErrorMessage", "Blog kojem pokusavate da pristupite ne postoji.");
+					dispatcher = request.getRequestDispatcher(address);
+					dispatcher.forward(request, response);
+				}
+			}else {
+				address = "WEB-INF/pages/error.jsp";
+				session.setAttribute("globalErrorMessage", "Blog kojem pokusavate da pristupite ne postoji.");
+				dispatcher = request.getRequestDispatcher(address);
+				dispatcher.forward(request, response);
+			}
+		}else if("newComment".equals(action)) {
+			String commentContent = request.getParameter("content");
+			String blogId = request.getParameter("blogId");
+			if(commentContent != null && !"".equals(commentContent)) {
+				Comment comment = new Comment();
+				comment.setContent(commentContent);
+				comment.setTimestamp(new Date());
+				comment.setUserId(userBean.getLoggedInUser().getId());
+				if(blogDAO.addComment(blogId, comment)) {
+					writer.write("success");
+				}
+			}else {
+				writer.write("Polje ne smije ostati prazno");
 			}
 		}
 		

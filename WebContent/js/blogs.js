@@ -14,6 +14,9 @@ $(window).ready(function(){
                     $("#blogMessage").addClass("text-success");
                     $("#blogMessage").text("Uspješno ste kreirali blog");
                     //ucitati blog u pozadini
+                    $("#blog-list-div").load("Blogs?action=all #blog-list-div", function(){
+                        console.log('ucitani komentari');
+                    });
                 }
             }
         })

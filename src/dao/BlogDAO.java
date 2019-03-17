@@ -1,6 +1,7 @@
 package dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -151,6 +152,7 @@ public class BlogDAO {
 						comment.setContent(d.getString("content"));
 						comments.add(comment);
 					}
+					Collections.reverse(comments);
 					blog.setComments(comments);
 				}
 				result = blog;

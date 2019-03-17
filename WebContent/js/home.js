@@ -26,6 +26,9 @@ $(document).ready(function () {
                     $('#newPostCollapse').trigger('click');
                     $("#newPostContent").val("");
                     $("#newPostLink").val("");
+
+                    //refreshujemp postove
+                    refreshHomePosts();
                 }else if(responseText === "error"){
                     $("#newPostError").text("Došlo je do greške pri kreiranju objave.");
                 }else{
@@ -188,11 +191,15 @@ setInterval(() => {
 }, 10000);
 
 setInterval(() => {
+    refreshHomePosts();
+}, 30000);
+
+function refreshHomePosts(){
     $("#content-container").load("Home #content-container", function(){
         //kad se ucitaju svi
         refreshEventHandlers();
     });
-}, 30000);
+}
 
 function refreshEventHandlers(){
     $(".like-button").off();
