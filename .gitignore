@@ -1,1 +1,3 @@
 *.jar
+WebContent/img/*
+WebContent/files/*
