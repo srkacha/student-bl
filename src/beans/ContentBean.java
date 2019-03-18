@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import com.sun.swing.internal.plaf.basic.resources.basic;
 
 import dao.BlogDAO;
+import dao.MaterialDAO;
 import dao.UserPostDAO;
 import dto.Blog;
+import dto.Material;
 import dto.Post;
 import dto.User;
 
@@ -19,11 +21,9 @@ public class ContentBean implements Serializable{
 	private int loggedInUserId;
 	private UserPostDAO userPostDAO = new UserPostDAO();
 	private BlogDAO blogDAO = new BlogDAO();
-	
 	private Blog blogToShow = new Blog();
+	private MaterialDAO materialDAO = new MaterialDAO();
 	
-	
-
 	public Blog getBlogToShow() {
 		return blogToShow;
 	}
@@ -89,4 +89,11 @@ public class ContentBean implements Serializable{
 		return blogDAO.selectAll();
 	}
 	
+	public List<Material> getAllMaterials(){
+		return materialDAO.selectAll();
+	}
+	
+	public List<Material> getLastThreeMaterials(){
+		return materialDAO.selectLastThree();
+	}
 }

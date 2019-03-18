@@ -13,8 +13,28 @@ public class LoggingInfoDAO {
 	private static String CHECK = "select count(*) from loggingInfo where userId=?";
 	private static String INSERT = "insert into loggingInfo values(?,?,?)";
 	private static String UPDATE = "update loggingInfo set loginTimestamp=?, logoutTimestamp=? where userId=?";
-	private static String UPDATE_LOGOUT = "update loggingInfo set logoutTimestamp=? where userId=?";
-	private static String REFRESH_LOGOUT = "udapte loggingInfo set logoutTimestamp=? where userId=?";
+	private static String UPDATE_LOGOUT = "update loggingInfo set logoutTimestamp=? where userId=? and loginTimestamp=?";
+	private static String GET_LAST_LOGIN = "select loginTimestamp from loggingInfo where userId=? order by loginTimestamp desc limit 1";
+	
+	public Timestamp getLastLogin(int id) {
+		ConnectionPool cPool = ConnectionPool.getConnectionPool();
+		Connection connection = null;
+		Timestamp result = new Timestamp(new Date().getTime());
+		try {
+			connection = cPool.checkOut();
+			PreparedStatement preparedStatement = connection.prepareStatement(GET_LAST_LOGIN);
+			preparedStatement.setInt(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()) {
+				result = resultSet.getTimestamp(1);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+		}finally {
+			cPool.checkIn(connection);
+		}
+		return result;
+	}
 	
 	public boolean refreshLogout(int id) {
 		ConnectionPool cPool = ConnectionPool.getConnectionPool();
@@ -26,6 +46,7 @@ public class LoggingInfoDAO {
 			Timestamp now = new Timestamp(new Date().getTime() + 30*60*1000);
 			preparedStatement.setTimestamp(1, now);
 			preparedStatement.setInt(2, id);
+			preparedStatement.setTimestamp(3, getLastLogin(id));
 			preparedStatement.executeUpdate();
 			if(preparedStatement.getUpdateCount() > 0) {
 				result = true;
@@ -121,6 +142,7 @@ public class LoggingInfoDAO {
 			Timestamp now = new Timestamp(new Date().getTime());
 			preparedStatement.setTimestamp(1, now);
 			preparedStatement.setInt(2, id);
+			preparedStatement.setTimestamp(3, getLastLogin(id));
 			preparedStatement.executeUpdate();
 			if(preparedStatement.getUpdateCount() > 0) {
 				result = true;

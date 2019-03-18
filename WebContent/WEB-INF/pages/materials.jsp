@@ -1,3 +1,4 @@
+<%@page import="dto.Material"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="dto.User"%>
 <%@page import="beans.ContentBean"%>
@@ -22,8 +23,8 @@
         	<div class="row justify-content-center">
         		<div class="col-md-8 rounded bg-light p-2 my-2">
         			<div class="form-inline">
-        				<h1 class="text-dark"><i class="fas fa-blog"></i> Blogovi</h1>
-        				<button class="btn btn-secondary ml-auto" data-toggle="modal" data-target="#myModal"><i class="fas fa-plus"></i> Novi blog</button>
+        				<h1 class="text-dark"><i class="fas fa-file"></i> Materijali</h1>
+        				<button class="btn btn-secondary ml-auto" data-toggle="modal" data-target="#myModal"><i class="fas fa-plus"></i> Novi materijal</button>
         			</div>
         			
         			<div class="modal" id="myModal">
@@ -32,24 +33,30 @@
 	
 								<!-- Modal Header -->
 								<div class="modal-header">
-									<h4 class="modal-title">Novi blog</h4>
+									<h4 class="modal-title">Novi materijal</h4>
 									<button type="button" class="close" data-dismiss="modal">&times;</button>
 								</div>
 	
 								<!-- Modal body -->
 								<div class="modal-body text-left">
-									<form id="newBlogForm" action="Blogs" method="post">
-										<div class="form-gorup">
-											<label>Naslov:</label>
-											<input type="title" class="form-control" name="title">
+									<form id="newFileForm" method="POST" enctype="multipart/form-data">
+										
+										<div class="form-group">
+											<label>Materijal:</label>
+											<div class="custom-file">
+												<input type="file" name="file" class="custom-file-input" id="customFile">
+												<label class="custom-file-label" for="customFile">
+													Izaberi fajl</label>
+											</div>
 										</div>
+										
 										<div class="form-gorup">
-											<label>Sadržaj:</label>
-											<textarea type="content" class="form-control" name="content" rows="8"></textarea>
+											<label>Opis:</label>
+											<textarea type="content" class="form-control" name="description" rows="5"></textarea>
 										</div>
-										<input type="hidden" name="action" value="newBlog">
+										<input type="hidden" name="action" value="newFile">
 										<br>
-										<label id="blogMessage" class="text-danger"></label>
+										<label id="fileMessage" class="text-danger"></label>
 										<br>
 										
 									</form>
@@ -57,7 +64,7 @@
 	
 								<!-- Modal footer -->
 								<div class="modal-footer">
-									<button id="createBlogButton" type="button" class="btn btn-secondary">Kreiraj</button>
+									<button id="uploadFileButton" type="button" class="btn btn-secondary"><i class="fas fa-upload"></i> Postavi</button>
 									<button type="button" class="btn btn-danger"
 										data-dismiss="modal">Zatvori</button>
 								</div>
@@ -67,26 +74,30 @@
         			
         			
         			<hr>
-        			<div id="blog-list-div">
+        			<div id="material-list-div">
         				<%
         					ContentBean contentBean = (ContentBean)session.getAttribute("contentBean");
-        					for(Blog blog: contentBean.getAllBlogs()){
-        						String id = blog.getId();
-        						User user = blog.getUser();
-        						String nameAndSurname = user.getName() + " " + user.getSurname();
-        						int userId = user.getId();
-        						String userImage = user.getPicture()==null || user.getPicture().equals("")?"img/user.svg":user.getPicture();
-        						String timestamp = new SimpleDateFormat("dd MMM yyyy HH:mm").format(blog.getTimestamp());
-        						String title = blog.getTitle();
+		       				for(Material material: contentBean.getAllMaterials()){
+								int userId = material.getUserId();
+								User user = material.getUser();
+								String nameAndSurname = user.getName() + " " + user.getSurname();
+								String userImage = user.getPicture() == null || user.getPicture().equals("")?"img/user.svg":user.getPicture();
+								String path = material.getPath();
+								String description = material.getDescription();
+								String fileName = path.split("\\\\")[1];
+								String timestamp = new SimpleDateFormat("dd MMM yyyy HH:mm").format(material.getTimestamp());
         				%>
-        					<div id="blog-body" class="bg-white rounded py-1 px-2 mb-2">
-	        					<div id="blog-header" class="bg-secondary text-white form-inline p-2 rounded">
+        					<div id="material-body" class="bg-white rounded py-1 px-2 mb-2">
+	        					<div id="material-header" class="bg-secondary text-white form-inline p-2 rounded">
 	        						<img alt="" src="<%=userImage %>" height="20" width="20" class="rounded-circle mr-1">
 	        						<a style="text-decoration: none" href="Account?action=view&userId=<%=userId %>" class="text-white"><%=nameAndSurname %></a>
 	        						<span class="ml-auto"><%=timestamp %></span>
 	        					</div>
-	        					<div id="blog-title" class="p-2">
-	        						<h3><a style="text-decoration: none" href="Blogs?action=view&blogId=<%=id %>" class="text-dark"><%=title %></a></h3>
+	        					<div id="material-title" class="p-2 mt-2">
+	        						<h3><a style="text-decoration: none" href="<%=path %>" class="text-dark"><i class="fas fa-file-download"></i> <%=fileName %></a></h3>
+	        					</div>
+	        					<div id="material-description" class="p-2">
+	        						<p><%=description %></p>
 	        					</div>
         					</div>
         				<%
@@ -115,6 +126,6 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         
         <!-- js fajlovi koji ukljucuju rad sa jQuerijem -->
-        <script type="text/javascript" src="js/blogs.js"></script>
+        <script type="text/javascript" src="js/materials.js"></script>
     </body>
 </html>

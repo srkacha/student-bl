@@ -1,3 +1,4 @@
+<%@page import="dto.Material"%>
 <%@page import="dto.Blog"%>
 <%@page import="dto.NewsPost"%>
 <%@page import="dto.EventPost"%>
@@ -28,7 +29,7 @@
 	        	<div class="col-md-12">
 	        		<div class="bg-light mr-1 ml-1 rounded p-2">
 	        			<div class="bg-dark px-2 py-1 rounded text-white"><h4>Aktivni korisnici</h4></div>
-				        <div class="scrolling-wrapper" style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap;">
+				        <div class="scrolling-wrapper" style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
 							  <%
 							  	for(User online: connectionBean.getOnlineConnections()){
 							  %>
@@ -53,10 +54,10 @@
         
         <div class="container-fluid">
         	<div class="row p-2 justify-content-center bg-white">
-        		<div id="onlineUsersDiv" class="col-md-3 order-1 order-md-1">
+        		<div id="onlineUsersDiv" class="col-md-3 order-1 order-md-1" >
         			<div id="onlineUsersContent" class="bg-light mr-1 ml-1 rounded p-2 position-fixed" style="width:22%">
         				<div class="bg-dark px-2 py-1 rounded text-white"><h4><i class="fas fa-users"></i> Aktivni korisnici</h4></div>
-        				<div id="online-user-list" class="mt-1" style="overflow-y: scroll;">
+        				<div id="online-user-list" class="mt-1" style="overflow-y: auto;max-height: 400px">
 							<%
 							  	for(User online: connectionBean.getOnlineConnections()){
 							  %>
@@ -73,7 +74,6 @@
 							  <%
 							  	}
 							  %>
-							  
 						</div>
 					</div>
 					
@@ -180,7 +180,7 @@
         			</div>
         			
         		</div>
-        		<div id="blogsAndFilesDiv" class="col-md-3 order-2 order-md-3">
+        		<div id="blogsAndFilesDiv" class="col-md-3 order-2 order-md-3 mb-2">
         			<div class="bg-light mr-1 ml-1 rounded p-2">
         				<div class="bg-dark px-2 py-1 rounded text-white mb-2"><h4><i class="fas fa-blog"></i> <a style="text-decoration: none" href="Blogs?action=all" class="text-white">Blogovi</a></h4></div>
         				<div id="blogs-div" class="mb-2">
@@ -194,9 +194,29 @@
         						}
         					%>
         				</div>
-        				<div class="bg-dark px-2 py-1 rounded text-white mb-2"><h4><i class="fas fa-file"></i> <a style="text-decoration: none" href="Files" class="text-white">Materijali</a></h4></div>
+        				<div class="bg-dark px-2 py-1 rounded text-white mb-2"><h4><i class="fas fa-file"></i> <a style="text-decoration: none" href="Materials?action=all" class="text-white">Materijali</a></h4></div>
         				<div id="files-div">
-        					File 1
+        					<%
+        						for(Material material: contentBean.getLastThreeMaterials()){
+        							int userId = material.getUserId();
+        							User user = material.getUser();
+        							String nameAndSurname = user.getName() + " " + user.getSurname();
+        							String userImage = user.getPicture() == null || user.getPicture().equals("")?"img/user.svg":user.getPicture();
+        							String path = material.getPath();
+        							String description = material.getDescription();
+        							String fileName = path.split("\\\\")[1];
+        					%>
+        						<div class="rounded bg-white p-2 mb-2">
+	        						<div id="file-header" class="align-middle pb-2">
+	        							<img alt="" src="<%=userImage %>" height="20" width="20" class="rounded-circle">
+	        							<a href="Account?action=view&userId=<%=userId%>" class="text-dark" style="text-decoration: none;"><%=nameAndSurname %></a>
+	        						</div>
+	        						<a href="<%=path %>" class="text-dark" style="text-decoration: none;"><h4><i class="fas fa-file-download"></i> <%=fileName %></h4></a>
+	        						<p><%=description %></p>
+	        					</div>
+        					<%
+        						}
+        					%>
         				</div>
         			</div>
         		</div>

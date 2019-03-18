@@ -64,6 +64,7 @@
 						<hr>
 					</div>
         			<div id="comments-div" class="px-4 pt-2">
+        				<div id="comments-div-body">
         				<%
         					for(Comment comment:blog.getComments()){
         						String commentContent = comment.getContent();
@@ -86,7 +87,7 @@
         				<%
         					}
         				%>
-        				
+        				</div>
         			</div>
         		</div>
         	</div>

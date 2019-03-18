@@ -15,7 +15,8 @@ $(window).ready(function(){
                     $("#newCommentError").text("");
                     $("#collapseNewCommentButton").trigger('click');
                     var url="Blogs?action=view&blogId=" + id;
-                    $("#comments-div").load(url + " #comments-div");
+                    $("#comments-div").load(url + " #comments-div-body");
+                    $("#newCommentContent").val("");
                 }else{
                     $("#newCommentError").text(responseText);
                 }

@@ -109,11 +109,7 @@ public class LoginController extends HttpServlet {
 	
 	private void logLoggingInfo(int id, String action) {
 		if("login".equals(action)) {
-			if(loggingInfoDAO.userExists(id)) {
-				loggingInfoDAO.update(id);
-			}else {
-				loggingInfoDAO.insert(id);
-			}
+			loggingInfoDAO.insert(id);
 		}else if("logout".equals(action)) {
 			loggingInfoDAO.update_logout(id);
 		}

@@ -14,6 +14,7 @@ import dto.User;
 public class UserDAO {
 	
 	private ConnectionDAO connectionDAO = new ConnectionDAO();
+	private LoggingInfoDAO loggingInfoDAO = new LoggingInfoDAO();
 	
 	private static String USER_EXISTS = "select count(*) from user where username=?";
 	private static String MAIL_EXISTS = "select count(*) from user where mail=?";
@@ -27,7 +28,7 @@ public class UserDAO {
 												+ " union (select * from user inner join connection on user.id = connection.userTwoId where connection.userOneId = ? and connection.connectionType=2 and user.blocked=0)";
 	private static String SELECT_OTHERS = "select * from user where id not in (select userOneId from connection where userTwoId=? union select userTwoId from connection where userOneId=? and connectionType=2) and id <> ? and blocked=0";
 	private static String SELECT_OTHERS_FROM_FACULTY = "select * from user where facultyId=? and id not in (select userOneId from connection where userTwoId=? union select userTwoId from connection where userOneId=? and connectionType=2) and id <> ? and blocked=0";
-	private static String IS_USER_ONLINE = "select count(*) from user inner join loggingInfo on user.id = loggingInfo.userId where user.id = ? and logoutTimestamp>UTC_TIMESTAMP()";
+	private static String IS_USER_ONLINE = "select count(*) from user inner join loggingInfo on user.id = loggingInfo.userId where user.id = ? and loginTimestamp=? and logoutTimestamp>UTC_TIMESTAMP()";
 	
 	public boolean isUserOnilne(int id) {
 		ConnectionPool cPool = ConnectionPool.getConnectionPool();
@@ -37,6 +38,7 @@ public class UserDAO {
 			connection = cPool.checkOut();
 			PreparedStatement preparedStatement = connection.prepareStatement(IS_USER_ONLINE);
 			preparedStatement.setInt(1, id);
+			preparedStatement.setTimestamp(2, loggingInfoDAO.getLastLogin(id));
 			ResultSet resultSet = preparedStatement.executeQuery();
 			if(resultSet.next()) {
 				int value = resultSet.getInt(1);
